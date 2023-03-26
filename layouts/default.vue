@@ -76,7 +76,7 @@ export default {
   methods: {
     isWelcomeScreen() {
       if (
-        !localStorage.welcomeSreen &&
+        !localStorage.welcomeScreen &&
         this.$router.currentRoute.path !== '/register' &&
         this.$router.currentRoute.path !== '/login'
       ) {
@@ -91,7 +91,6 @@ export default {
   },
   mounted() {
     if (this.$router.currentRoute.path === '/') {
-      localStorage.setItem('welcomeScreen', true)
       this.isWelcomeScreen()
     }
   },

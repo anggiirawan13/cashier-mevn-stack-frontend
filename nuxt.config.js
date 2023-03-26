@@ -44,8 +44,17 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    'vue-sweetalert2/nuxt'
+    '@nuxtjs/i18n',
+    'vue-sweetalert2/nuxt',
   ],
+
+  i18n: {
+    langDir: 'lang/',
+    defaultLocale: 'id',
+    locales: [
+      {code: 'id', name: 'Indonesia', iso: 'id-ID', file: 'id.json'},
+    ],
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
