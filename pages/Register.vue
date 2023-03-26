@@ -18,7 +18,6 @@
               type="email"
               :rules="rules.email"
               v-model="form.email"
-              @keydown="onChange"
             />
             <v-text-field
               name="password"
@@ -38,13 +37,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="checkEmail" color="success">Check Email</v-btn>
-          <v-btn
-            @click="onSubmit"
-            color="primary"
-            :disabled="btnRegisterDisable"
-            >Register</v-btn
-          >
+          <v-btn @click="onSubmit" color="primary">Register</v-btn>
         </v-card-actions>
       </v-card>
       <p>Kamu sudah punya akun ? <v-btn to="/login" plain>Login</v-btn></p>
@@ -82,20 +75,6 @@ export default {
     }
   },
   methods: {
-    onChange() {
-      this.btnRegisterDisable = true
-    },
-    checkEmail() {
-      this.$axios
-        .post('http://localhost:3000/auth/check-email', this.form)
-        .then(async () => {
-          await this.$swal.fire({ title: 'Email OK!', icon: 'success' })
-          this.btnRegisterDisable = false
-        })
-        .catch(() =>
-          this.$swal.fire({ title: 'Email already exist!', icon: 'error' })
-        )
-    },
     onSubmit() {
       this.$axios
         .post('http://localhost:3000/auth/register', this.form)
@@ -103,7 +82,9 @@ export default {
           await this.$swal.fire({ title: 'Register Success!', icon: 'success' })
           this.$router.push('/login')
         })
-        .catch((error) => console.error(error))
+        .catch(() => {
+          this.$swal.fire({ title: 'Email already exist!', icon: 'error' })
+        })
     },
   },
 }
