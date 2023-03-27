@@ -45,7 +45,6 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/i18n',
-    'vue-sweetalert2/nuxt',
   ],
 
   i18n: {
