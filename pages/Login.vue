@@ -4,8 +4,8 @@
             <v-card class="mb-2">
                 <v-toolbar color="primary" dark>LOGIN</v-toolbar>
                 <v-card-text>
-                    <v-alert v-if="messageError" color="red lighten-2" dark>{{
-                        $t(messageError)
+                    <v-alert v-if="message" color="red lighten-2" dark>{{
+                        $t(message)
                     }}</v-alert>
                     <v-form>
                         <v-text-field
@@ -47,18 +47,29 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
+    middleware: ['unauthenticated'],
     data() {
         return {
             btnLoginDisable: false,
-            messageError: "",
+            message: "",
             form: {
                 email: "",
                 password: "",
             },
         };
     },
+    mounted() {
+        if (this.$route.params.message === 'AUTH_IS_REQUIRED') {
+            this.message = this.$route.params.message
+        }
+    },
     methods: {
+        ...mapMutations('auth', {
+            login: 'setLogin'
+        }),
         storeWelcomeScreen() {
             localStorage.setItem("welcomeScreen", true);
         },
@@ -67,16 +78,18 @@ export default {
 
             await this.$axios
                 .post("http://localhost:3000/auth/login", this.form)
-                .then(() => {
+                .then((response) => {
                     if (!localStorage.welcomeScreen) {
                         this.storeWelcomeScreen();
                     }
+
+                    this.login(response.data.access_token, response.data.refresh_token, response.data.fullname)
 
                     this.$router.push("/dashboard");
                 })
                 .catch((error) => {
                     console.log(error);
-                    this.messageError = error.response.data.message;
+                    this.message = error.response.data.message;
                 });
 
             this.btnLoginDisable = false;

@@ -10,10 +10,7 @@
 </template>
 
 <script>
-import Products from '~/components/Product.vue';
-
-export default {
-    name: "IndexPage",
-    components: { Products }
-}
+export default ({
+  middleware: ['authenticated'],    
+})
 </script>

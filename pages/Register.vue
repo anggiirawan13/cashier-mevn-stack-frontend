@@ -4,8 +4,8 @@
             <v-card class="mb-2">
                 <v-toolbar color="primary" dark>REGISTER</v-toolbar>
                 <v-card-text>
-                    <v-alert v-if="messageError" color="red lighten-2" dark>{{
-                        $t(messageError)
+                    <v-alert v-if="message" color="red lighten-2" dark>{{
+                        $t(message)
                     }}</v-alert>
                     <v-form>
                         <v-text-field
@@ -62,10 +62,11 @@
 
 <script>
 export default {
+    middleware: ['unauthenticated'],
     data() {
         return {
             btnRegisterDisable: false,
-            messageError: "",
+            message: "",
             form: {
                 fullname: "",
                 email: "",
@@ -73,21 +74,21 @@ export default {
                 retype_password: "",
             },
             rules: {
-                fullname: [(v) => !!v || "Fullname is required!"],
+                fullname: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Fullname' })],
                 email: [
-                    (v) => !!v || "Email is required!",
-                    (v) => /.+@.+/.test(v) || "Email invalid!",
+                    (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Email' }),
+                    (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),
                 ],
                 password: [
-                    (v) => !!v || "Password is required",
+                    (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Password' }),
                     (v) =>
                         v.length >= 8 ||
-                        "Password must be at least 8 chareacters!",
+                        this.$t('FIELD_MIN', { field: 'Password', min: 8 }),
                 ],
                 retype_password: [
                     (v) =>
                         v === this.form.password ||
-                        "Re-Password must be same with password!",
+                        this.$t('FIELD_CONFIRM', { confirm: 'Re-Password', field: 'Password' }),
                 ],
             },
         };
@@ -102,7 +103,7 @@ export default {
                     this.$router.push("/login");
                 })
                 .catch((error) => {
-                    this.messageError = error.response.data.message;
+                    this.message = error.response.data.message;
                 });
 
             this.btnRegisterDisable = false;

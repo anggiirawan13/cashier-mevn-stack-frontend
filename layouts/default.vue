@@ -47,31 +47,68 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'DefaultLayout',
   data() {
     return {
       sideDrawer: false,
-      sideMenu: [
+      sideMenu: [],
+      originalSideMenu: [
+        {
+          icon: 'mdi-view-dashboard-variant',
+          title: 'Dashboard',
+          to: '/dashboard',
+          middleware: ['authenticated'],
+        },
+        {
+          icon: 'mdi-application',
+          title: 'Cashier App',
+          to: '/',
+          middleware: ['admin', 'cashier'],
+        },
         {
           icon: 'mdi-account',
           title: 'Account',
           to: '/account',
+          middleware: ['admin'],
         },
         {
-          icon: 'mdi-bell',
-          title: 'Notification',
-          to: '/notification',
+          icon: 'mdi-fingerprint',
+          title: 'Absence',
+          to: '/absence',
+          middleware: ['authenticated'],
+        },
+        {
+          icon: 'mdi-login',
+          title: 'Login',
+          to: '/login',
+          middleware: ['unauthenticated'],
+        },
+        {
+          icon: 'mdi-logout',
+          title: 'Logout',
+          to: '/logout',
+          middleware: ['authenticated'],
         },
       ],
-      bottomMenu: [
+      bottomMenu: [],
+      originalBottomMenu: [
         {
           icon: 'mdi-application',
           title: 'App',
           to: '/',
+          middleware: ['authenticated'],
         },
       ],
     }
+  },
+  computed: {
+    ...mapGetters('auth', {
+      authenticated: ['authenticated'],
+      user: ['user'],
+    })
   },
   methods: {
     isWelcomeScreen() {
@@ -83,16 +120,36 @@ export default {
         this.$router.push('/register')
       }
     },
+    filterMenu() {
+      this.sideMenu = this.originalSideMenu.filter(item => {
+        if (this.authenticated) {
+          return item.middleware.includes('authenticated') || item.middleware.includes(this.user.role)
+        } else {
+          return item.middleware.includes('unauthenticated')
+        }
+      })
+
+      this.bottomMenu = this.originalBottomMenu.filter(item => {
+        if(this.authenticated) {
+          return item.middleware.includes('authenticated')
+        }
+      })
+    },
   },
   watch: {
     $route() {
       this.isWelcomeScreen()
     },
+    authenticated() {
+      this.filterMenu()
+    }
   },
   mounted() {
     if (this.$router.currentRoute.path === '/') {
       this.isWelcomeScreen()
     }
+
+    this.filterMenu()
   },
 }
 </script>
