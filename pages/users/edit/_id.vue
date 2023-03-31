@@ -1,12 +1,13 @@
 <template>
     <v-row>
-        <v-col cols="10" offset="1" md="4" offset-md="4">
+        <v-col cols="10" offset="1">
             <v-card class="mb-2">
-                <v-toolbar color="primary" dark>REGISTER</v-toolbar>
+                <v-toolbar color="primary" dark>EDIT USER</v-toolbar>
                 <v-card-text>
                     <v-alert v-if="message" color="red lighten-2" dark>{{
                         $t(message)
                     }}</v-alert>
+                    <v-breadcrumbs :items="breadcrumbs" class="pa-0"></v-breadcrumbs>
                     <v-form ref="form">
                         <v-text-field
                             name="fullname"
@@ -36,15 +37,16 @@
                             :rules="rules.retype_password"
                             v-model="form.retype_password"
                         />
+                        <v-select v-model="form.role" :items="roles" label="Role"></v-select>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                        @click="doRegister"
+                        @click="doSave"
                         color="primary"
-                        :disabled="btnRegisterDisable"
-                        ><span v-if="!btnRegisterDisable">Register</span>
+                        :disabled="btnSaveDisable"
+                        ><span v-if="!btnSaveDisable">Save</span>
                         <v-progress-circular
                             v-else
                             color="primary"
@@ -53,35 +55,43 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-            <p>
-                Kamu sudah punya akun ? <v-btn to="/login" plain>Login</v-btn>
-            </p>
         </v-col>
     </v-row>
 </template>
 
 <script>
 export default {
-    middleware: ['unauthenticated'],
+    middleware: ['authenticated'],
+    asyncData({ params }) {
+        return  {
+            id: params.id
+        }
+    },
     data() {
         return {
-            btnRegisterDisable: false,
+            breadcrumbs: [
+                { text: "Users", to: "/users", disabled: false, exact: true },
+                { text: "Edit", disabled: true },
+            ],
+            btnSaveDisable: false,
             message: "",
+            roles: ["admin", "cashier", "employee"],
             form: {
                 fullname: "",
                 email: "",
                 password: "",
                 retype_password: "",
+                role: "",
             },
             rules: {
                 fullname: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Fullname' })],
+                role: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Role' })],
                 email: [
                     (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Email' }),
                     (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),
                 ],
                 password: [
-                    (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Password' }),
-                    (v) =>
+                    (v) => v.length === 0 ||
                         v.length >= 8 ||
                         this.$t('FIELD_MIN', { field: 'Password', min: 8 }),
                 ],
@@ -94,23 +104,49 @@ export default {
         };
     },
     methods: {
-        async doRegister() {
+        async doSave() {
             this.message = ""
-            if (this.$ref.form.validate()) {
-                this.btnRegisterDisable = true;
-
+            if (this.$refs.form.validate()) {
+                this.btnSaveDisable = true;
+                
                 await this.$axios
-                    .post("http://localhost:3000/auth/register", this.form)
-                    .then(() => {
-                        this.$router.push("/login");
-                    })
-                    .catch((error) => {
-                        this.message = error.response.data.message;
+                .put(`http://localhost:3000/users/${this.id}`, this.form)
+                .then(() => {
+                    this.$router.push({
+                        name: `users___${this.$i18n.locale}`,
+                        params: {
+                            type: 'success', message: 'UPDATE_SUCCESS', fullname: this.form.fullname,
+                        }
                     });
-
-                this.btnRegisterDisable = false;
+                })
+                .catch(() => {
+                    this.$router.push({
+                        name: `users___${this.$i18n.locale}`,
+                        params: {
+                            type: 'error', message: 'UPDATE_FAILED', fullname: this.form.fullname,
+                        }
+                    });
+                });
+                
+                this.btnSaveDisable = false;
             }
         },
+        getData() {
+            this.$axios
+                .get(`http://localhost:3000/users/${this.id}`, this.form)
+                .then((response) => {
+                    let user = response.data.user
+                    this.form.fullname = user.fullname
+                    this.form.email = user.email
+                    this.form.role = user.role
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     },
+    mounted() {
+        this.getData()
+    }
 };
 </script>

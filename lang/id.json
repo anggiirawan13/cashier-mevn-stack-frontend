@@ -6,5 +6,7 @@
     "FIELD_CONFIRM": "Isi {confirm} tidak sama dengan {field}",
     "WRONG_PASSWORD": "Password salah",
     "EMAIL_NOT_FOUND": "Email tidak ditemukan",
-    "EMAIL_IS_EXIST": "Email sudah terdaftar"
+    "EMAIL_IS_EXIST": "Email sudah terdaftar",
+    "UPDATE_SUCCESS": "Data {title} berhasil diubah",
+    "UPDATE_FAILED": "Data {title} gagal diubah"
 }
