@@ -106,9 +106,14 @@ export default {
                 this.btnSaveDisable = true;
                 
                 await this.$axios
-                .post("http://localhost:3000/users", this.form)
+                .post("/users", this.form)
                 .then(() => {
-                    this.$router.push("/users");
+                    this.$router.push({
+                        name: `users___${this.$i18n.locale}`,
+                        params: {
+                            type: 'success', message: 'CREATE_SUCCESS', fullname: this.form.fullname,
+                        }
+                    });
                 })
                 .catch((error) => {
                     this.message = error.response.data.message;

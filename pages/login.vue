@@ -77,7 +77,7 @@ export default {
             this.btnLoginDisable = true;
 
             await this.$axios
-                .post("http://localhost:3000/auth/login", this.form)
+                .post("/auth/login", this.form)
                 .then((response) => {
                     if (!localStorage.welcomeScreen) {
                         this.storeWelcomeScreen();

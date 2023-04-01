@@ -100,7 +100,7 @@ export default {
                 this.btnRegisterDisable = true;
 
                 await this.$axios
-                    .post("http://localhost:3000/auth/register", this.form)
+                    .post("/auth/register", this.form)
                     .then(() => {
                         this.$router.push("/login");
                     })

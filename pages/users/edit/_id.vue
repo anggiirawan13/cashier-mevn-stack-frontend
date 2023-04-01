@@ -110,7 +110,7 @@ export default {
                 this.btnSaveDisable = true;
                 
                 await this.$axios
-                .put(`http://localhost:3000/users/${this.id}`, this.form)
+                .put(`/users/${this.id}`, this.form)
                 .then(() => {
                     this.$router.push({
                         name: `users___${this.$i18n.locale}`,
@@ -133,7 +133,7 @@ export default {
         },
         getData() {
             this.$axios
-                .get(`http://localhost:3000/users/${this.id}`, this.form)
+                .get(`/users/${this.id}`, this.form)
                 .then((response) => {
                     let user = response.data.user
                     this.form.fullname = user.fullname
