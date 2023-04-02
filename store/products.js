@@ -22,14 +22,14 @@ export const actions = {
   updateCategoryId({commit}, categoryId) {
     commit('updateCategoryId', categoryId)
   },
-  fetchProducts({commit}) {
+  getProducts({commit}) {
     return this.$axios.$get('/products').then(response => {
-      commit('updateProducts', response.products);
+      commit('updateProducts', response.products.docs);
     })
   },
-  fetchCategories({commit}) {
+  getCategories({commit}) {
     return this.$axios.$get('/categories').then(response => {
-      commit('updateCategories', response.categories);
+      commit('updateCategories', response.categories.docs);
     })
   },
 }

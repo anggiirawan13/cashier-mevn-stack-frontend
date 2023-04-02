@@ -37,7 +37,8 @@
                             :rules="rules.retype_password"
                             v-model="form.retype_password"
                         />
-                        <v-select v-model="form.role" :items="roles" label="Role"></v-select>
+                        <v-select v-model="form.role" :items="roles" label="Role" :rules="rules.role"></v-select>
+                        <v-select v-model="form.status" :items="status" label="Status" :rules="rules.status"></v-select>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -74,16 +75,19 @@ export default {
             btnSaveDisable: false,
             message: "",
             roles: ["admin", "cashier", "employee"],
+            status: ["active", "inactive"],
             form: {
                 fullname: "",
                 email: "",
                 password: "",
                 retype_password: "",
                 role: "",
+                status: "",
             },
             rules: {
                 fullname: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Fullname' })],
                 role: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Role' })],
+                status: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Status' })],
                 email: [
                     (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Email' }),
                     (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),
@@ -137,6 +141,7 @@ export default {
                     this.form.fullname = user.fullname
                     this.form.email = user.email
                     this.form.role = user.role
+                    this.form.status = user.status
                 })
                 .catch((error) => {
                 });

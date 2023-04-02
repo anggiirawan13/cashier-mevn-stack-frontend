@@ -2,7 +2,7 @@
     <v-row>
         <v-col cols="10" offset="1">
             <v-card class="mb-2">
-                <v-toolbar color="primary" dark>CREATE USER</v-toolbar>
+                <v-toolbar color="primary" dark>ADD USER</v-toolbar>
                 <v-card-text>
                     <v-alert v-if="message" color="red lighten-2" dark>{{
                         $t(message)
@@ -45,7 +45,7 @@
                     <v-btn
                         @click="doSave"
                         color="primary"
-                        :loading    ="btnSaveDisable"
+                        :loading="btnSaveDisable"
                         >Save
                     </v-btn>
                 </v-card-actions>
@@ -58,13 +58,13 @@
 export default {
     middlewares: ['authenticated'],
     head: {
-        title: 'Create User'
+        title: 'Add User'
     },
     data() {
         return {
             breadcrumbs: [
                 { text: "Users", to: "/users", disabled: false, exact: true },
-                { text: "Create", disabled: true },
+                { text: "Add", disabled: true },
             ],
             btnSaveDisable: false,
             message: "",
@@ -109,7 +109,7 @@ export default {
                     this.$router.push({
                         name: `users___${this.$i18n.locale}`,
                         params: {
-                            type: 'success', message: 'CREATE_SUCCESS', fullname: this.form.fullname,
+                            type: 'success', message: 'ADD_SUCCESS', fullname: this.form.fullname,
                         }
                     });
                 })

@@ -69,8 +69,20 @@ export default {
           middlewares: ['admin', 'cashier'],
         },
         {
+          icon: 'mdi-coffee',
+          title: 'Products Management',
+          to: '/products',
+          middlewares: ['admin'],
+        },
+        {
+          icon: 'mdi-shape',
+          title: 'Categories Management',
+          to: '/categories',
+          middlewares: ['admin'],
+        },
+        {
           icon: 'mdi-account',
-          title: 'User Management',
+          title: 'Users Management',
           to: '/users',
           middlewares: ['admin'],
         },

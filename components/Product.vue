@@ -83,8 +83,8 @@ export default {
         ...mapActions({
             updateCategoryId: "products/updateCategoryId",
             addToCart: "carts/addToCart",
-            fetchProducts: "products/fetchProducts",
-            fetchCategories: "products/fetchCategories",
+            getProducts: "products/getProducts",
+            getCategories: "products/getCategories",
         }),
         resetSearchCategory() {
             this.updateCategoryId(0);
@@ -94,7 +94,7 @@ export default {
         filteredProducts() {
             if (this.categoryId) {
                 return this.products.filter(
-                    (product) => product.categoryId === this.categoryId
+                    (product) => product.category_id._id == this.categoryId
                 );
             }
 
@@ -127,11 +127,11 @@ export default {
     },
     mounted() {
         if (this.products.length <= 0) {
-            this.fetchProducts();
+            this.getProducts();
         }
 
         if (this.categories.length === 1) {
-            this.fetchCategories();
+            this.getCategories();
         }
     },
 };
