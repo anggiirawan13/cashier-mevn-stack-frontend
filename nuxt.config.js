@@ -9,8 +9,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - cashier-mevn',
-    title: 'cashier-mevn',
+    titleTemplate: 'Cashier - %s',
+    title: 'Cashier',
     htmlAttrs: {
       lang: 'en',
     },
@@ -31,6 +31,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {src: '~/plugins/persistedState.js', ssr: false},
+    {src: '~/plugins/axiosInterceptors.js', ssr: false},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

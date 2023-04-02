@@ -45,13 +45,8 @@
                     <v-btn
                         @click="doSave"
                         color="primary"
-                        :disabled="btnSaveDisable"
-                        ><span v-if="!btnSaveDisable">Save</span>
-                        <v-progress-circular
-                            v-else
-                            color="primary"
-                            indeterminate
-                        ></v-progress-circular>
+                        :loading    ="btnSaveDisable"
+                        >Save
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -61,7 +56,10 @@
 
 <script>
 export default {
-    middleware: ['authenticated'],
+    middlewares: ['authenticated'],
+    head: {
+        title: 'Create User'
+    },
     data() {
         return {
             breadcrumbs: [

@@ -45,6 +45,10 @@
 
 <script>
 export default ({
+    middlewares: ['authenticated'],
+    head: {
+        title: 'Users'
+    },
     data() {
         return {
             users: [],
@@ -86,7 +90,7 @@ export default ({
                 let i = users.pagingCounter
                 this.users.map(user => user.row = i++)
             })
-            .catch((error) => console.error(error))
+            .catch((error) => {})
             .finally(() => {
                 this.isLoading = false
             })
@@ -100,7 +104,7 @@ export default ({
                     title: this.itemDelete.fullname
                 })
             })
-            .catch((error) => console.error(error))
+            .catch((error) => {})
             .finally(() => {
                 this.cancelDelete()
             })

@@ -43,13 +43,8 @@
                     <v-btn
                         @click="doRegister"
                         color="primary"
-                        :disabled="btnRegisterDisable"
-                        ><span v-if="!btnRegisterDisable">Register</span>
-                        <v-progress-circular
-                            v-else
-                            color="primary"
-                            indeterminate
-                        ></v-progress-circular>
+                        :loading="btnRegisterDisable"
+                        >Register
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -62,7 +57,10 @@
 
 <script>
 export default {
-    middleware: ['unauthenticated'],
+    middlewares: ['unauthenticated'],
+    head: {
+        title: 'Register'
+    },
     data() {
         return {
             btnRegisterDisable: false,
@@ -96,7 +94,7 @@ export default {
     methods: {
         async doRegister() {
             this.message = ""
-            if (this.$ref.form.validate()) {
+            if (this.$refs.form.validate()) {
                 this.btnRegisterDisable = true;
 
                 await this.$axios

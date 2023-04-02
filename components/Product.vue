@@ -24,7 +24,7 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-item-group v-model="categoryId">
+                        <v-list-item-group>
                             <v-list-item
                                 v-for="(category, index) in categories"
                                 :key="index"
@@ -126,8 +126,13 @@ export default {
         },
     },
     mounted() {
-        this.fetchProducts();
-        this.fetchCategories();
+        if (this.products.length <= 0) {
+            this.fetchProducts();
+        }
+
+        if (this.categories.length === 1) {
+            this.fetchCategories();
+        }
     },
 };
 </script>

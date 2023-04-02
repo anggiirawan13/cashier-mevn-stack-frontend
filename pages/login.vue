@@ -27,14 +27,9 @@
                     <v-btn
                         @click="doLogin"
                         color="primary"
-                        :disabled="btnLoginDisable"
+                        :loading="btnLoginDisable"
                     >
-                        <span v-if="!btnLoginDisable">Login</span>
-                        <v-progress-circular
-                            v-else
-                            color="primary"
-                            indeterminate
-                        ></v-progress-circular>
+                        Login
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -50,7 +45,10 @@
 import { mapMutations } from 'vuex';
 
 export default {
-    middleware: ['unauthenticated'],
+    middlewares: ['unauthenticated'],
+    head: {
+        title: 'Login'
+    },
     data() {
         return {
             btnLoginDisable: false,
@@ -83,12 +81,15 @@ export default {
                         this.storeWelcomeScreen();
                     }
 
-                    this.login(response.data.access_token, response.data.refresh_token, response.data.fullname)
+                    this.login({
+                        access_token: response.data.access_token, 
+                        refresh_token:response.data.refresh_token, 
+                        fullname: response.data.fullname
+                    })
 
                     this.$router.push("/dashboard");
                 })
                 .catch((error) => {
-                    console.log(error);
                     this.message = error.response.data.message;
                 });
 

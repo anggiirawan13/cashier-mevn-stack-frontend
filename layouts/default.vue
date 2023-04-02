@@ -60,37 +60,37 @@ export default {
           icon: 'mdi-view-dashboard-variant',
           title: 'Dashboard',
           to: '/dashboard',
-          middleware: ['authenticated'],
+          middlewares: ['authenticated'],
         },
         {
           icon: 'mdi-application',
           title: 'Cashier App',
           to: '/',
-          middleware: ['admin', 'cashier'],
+          middlewares: ['admin', 'cashier'],
         },
         {
           icon: 'mdi-account',
           title: 'User Management',
           to: '/users',
-          middleware: ['admin'],
+          middlewares: ['admin'],
         },
         {
           icon: 'mdi-fingerprint',
           title: 'Absence',
           to: '/absence',
-          middleware: ['authenticated'],
+          middlewares: ['authenticated'],
         },
         {
           icon: 'mdi-login',
           title: 'Login',
           to: '/login',
-          middleware: ['unauthenticated'],
+          middlewares: ['unauthenticated'],
         },
         {
           icon: 'mdi-logout',
           title: 'Logout',
           to: '/logout',
-          middleware: ['authenticated'],
+          middlewares: ['authenticated'],
         },
       ],
       bottomMenu: [],
@@ -99,7 +99,7 @@ export default {
           icon: 'mdi-application',
           title: 'App',
           to: '/',
-          middleware: ['authenticated'],
+          middlewares: ['authenticated'],
         },
       ],
     }
@@ -123,15 +123,15 @@ export default {
     filterMenu() {
       this.sideMenu = this.originalSideMenu.filter(item => {
         if (this.authenticated) {
-          return item.middleware.includes('authenticated') || item.middleware.includes(this.user.role)
+          return item.middlewares.includes('authenticated') || item.middlewares.includes(this.user.role)
         } else {
-          return item.middleware.includes('unauthenticated')
+          return item.middlewares.includes('unauthenticated')
         }
       })
 
       this.bottomMenu = this.originalBottomMenu.filter(item => {
         if(this.authenticated) {
-          return item.middleware.includes('authenticated')
+          return item.middlewares.includes('authenticated')
         }
       })
     },
