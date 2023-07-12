@@ -27,13 +27,13 @@
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="primary" text @click="cancelDelete">Cancel</v-btn>
-                                        <v-btn color="error" text @click="confirmDelete(itemDelete._id)">Delete</v-btn>
+                                        <v-btn color="error" text @click="confirmDelete(itemDelete.id)">Delete</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
                         </template>
                         <template v-slot:item.actions="{ item }">
-                            <v-btn :to="`/products/edit/${item._id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
+                            <v-btn :to="`/products/edit/${item.id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
                             <v-btn small icon @click="deleteItem(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                         </template>
                     </v-data-table>
@@ -64,7 +64,7 @@ export default ({
                 { text: '#', value: 'row', sortable: false },
                 { text: 'Title', value: 'title', sortable: false },
                 { text: 'Price', value: 'price', sortable: false },
-                { text: 'Category', value: 'category_id.title', sortable: false },
+                { text: 'Category', value: 'category_id.categoryName', sortable: false },
                 { text: '', value: 'actions', sortable: false },
             ],
             breadcrumbs: [
@@ -77,20 +77,20 @@ export default ({
         }
     },
     methods: {
-        getProducts() {
+        async getProducts() {
             this.isLoading = true
             const { page, itemsPerPage } = this.options
             
-            this.$axios.get(`/products?page=${page}&limit=${itemsPerPage}&search=${this.search}`)
+            await this.$axios.get(`/products?page=${page}&limit=${itemsPerPage}&search=${this.search}`)
             .then((response) => {
-                let products = response.data.products
+                let products = response.data.result.products
                 this.products = products.docs
                 this.totalData = products.totalDocs
 
                 let i = products.pagingCounter
                 this.products.map(product => product.row = i++)
             })
-            .catch((error) => {})
+            .catch((error) => {console.log(error)})
             .finally(() => {
                 this.isLoading = false
             })
@@ -121,14 +121,12 @@ export default ({
         options: {
             handler() {
                 this.getProducts()
-                
             },
             deep: true,
         },
         search: {
             handler() {
                 this.getProducts()
-                
             },
         },
     },

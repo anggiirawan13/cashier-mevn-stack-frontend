@@ -8,8 +8,8 @@
                     :search-input.sync="search"
                     :loading="isLoading"
                     :items="itemSearch"
-                    item-text="title"
-                    item-value="_id"
+                    item-text="product_name"
+                    item-value="id"
                     v-model="selectedSearch"
                     return-object
                     hide-no-data
@@ -28,12 +28,12 @@
                             <v-list-item
                                 v-for="(category, index) in categories"
                                 :key="index"
-                                :value="category._id"
-                                :disabled="category._id === categoryId"
-                                @change="updateCategoryId(category._id)"
+                                :value="category.id"
+                                :disabled="category.id === categoryId"
+                                @change="updateCategoryId(category.id)"
                             >
                                 <v-list-item-title>{{
-                                    category.title
+                                    category.category_name
                                 }}</v-list-item-title>
                             </v-list-item>
                         </v-list-item-group>
@@ -48,8 +48,8 @@
                 cols="2"
             >
                 <v-card
-                    @click="addToCart(product._id)"
-                    :title="product.title"
+                    @click="addToCart(product.id)"
+                    :title="product.product_name"
                     :ripple="true"
                 >
                     <v-card-actions>
@@ -59,8 +59,8 @@
                             "
                         ></v-img>
                     </v-card-actions>
-                    <v-card-text align="center" class="product-title">
-                        {{ product.title }}
+                    <v-card-text align="center" class="product-name">
+                        {{ product.product_name }}
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { mapState, mapActions } from "vuex";
 export default {
     data() {
@@ -94,11 +95,16 @@ export default {
         filteredProducts() {
             if (this.categoryId) {
                 return this.products.filter(
-                    (product) => product.category_id._id == this.categoryId
+                    (product) => product.category_id == this.categoryId
                 );
             }
 
             return this.products;
+        },
+        selectedSearch() {
+                return this.products.filter(
+                    (e) => e.product_name == product.product_name
+                );
         },
         ...mapState("products", {
             products: "products",
@@ -115,15 +121,15 @@ export default {
                     this.isLoading = false;
                     this.resetSearchCategory();
 
-                    return e.title;
+                    return e.product_name;
                 });
             }, 1000);
         },
-        selectedSearch(product) {
-            if (product) {
-                this.addToCart(product._id);
-            }
-        },
+        // selectedSearch(product) {
+        //     if (product) {
+        //         this.addToCart(product.id);
+        //     }
+        // },
     },
     mounted() {
         if (this.products.length <= 0) {
@@ -138,7 +144,7 @@ export default {
 </script>
 
 <style scoped>
-.product-title {
+.product-name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

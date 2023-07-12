@@ -118,11 +118,11 @@ export default {
                 .get(`/products/${this.id}`, this.form)
                 .then((response) => {
                     let product = response.data.product
-                    this.form.title = product.title
+                    this.form.title = product.product_name
                     this.form.thumbnail = product.thumbnail
                     this.form.price = product.price
                     this.form.status = product.status
-                    this.form.categoryId = product.category_id._id
+                    this.form.categoryId = product.category_id
                 })
                 .catch((error) => {
                 });
@@ -133,7 +133,7 @@ export default {
                 let categories = response.data.categories
                 categories.docs.forEach(cat => {
                     this.categories.push({
-                        value: cat._id,
+                        value: cat.id,
                         text: cat.title
                     })
                 })

@@ -9,10 +9,10 @@
                     }}</v-alert>
                     <v-form>
                         <v-text-field
-                            name="email"
-                            label="Email"
-                            type="email"
-                            v-model="form.email"
+                            name="username"
+                            label="Username"
+                            type="text"
+                            v-model="form.username"
                         />
                         <v-text-field
                             name="password"
@@ -54,7 +54,7 @@ export default {
             btnLoginDisable: false,
             message: "",
             form: {
-                email: "",
+                username: "",
                 password: "",
             },
         };
@@ -82,9 +82,9 @@ export default {
                     }
 
                     this.login({
-                        access_token: response.data.access_token, 
-                        refresh_token:response.data.refresh_token, 
-                        fullname: response.data.fullname
+                        access_token: response.data.result.access_token, 
+                        refresh_token:response.data.result.refresh_token, 
+                        fullname: response.data.result.fullname
                     })
 
                     this.$router.push("/dashboard");

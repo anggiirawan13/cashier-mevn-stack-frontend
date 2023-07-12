@@ -16,6 +16,13 @@
                             v-model="form.fullname"
                         />
                         <v-text-field
+                            name="username"
+                            label="Username"
+                            type="text"
+                            :rules="rules.username"
+                            v-model="form.username"
+                        />
+                        <v-text-field
                             name="email"
                             label="Email"
                             type="email"
@@ -67,12 +74,14 @@ export default {
             message: "",
             form: {
                 fullname: "",
+                username: "",
                 email: "",
                 password: "",
                 retype_password: "",
             },
             rules: {
                 fullname: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Fullname' })],
+                username: [(v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Username' })],
                 email: [
                     (v) => !!v || this.$t('FIELD_IS_REQUIRED', { field: 'Email' }),
                     (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),

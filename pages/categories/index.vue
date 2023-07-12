@@ -23,17 +23,17 @@
                         <template v-slot:top>
                             <v-dialog v-model="dialogDelete" max-width="500px">
                                 <v-card>
-                                    <v-card-title>Kamu yakin ingin menghapus data {{ itemDelete.title }}?</v-card-title>
+                                    <v-card-title>Kamu yakin ingin menghapus data {{ itemDelete.categoryName }}?</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="primary" text @click="cancelDelete">Cancel</v-btn>
-                                        <v-btn color="error" text @click="confirmDelete(itemDelete._id)">Delete</v-btn>
+                                        <v-btn color="error" text @click="confirmDelete(itemDelete.id)">Delete</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
                         </template>
                         <template v-slot:item.actions="{ item }">
-                            <v-btn :to="`/categories/edit/${item._id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
+                            <v-btn :to="`/categories/edit/${item.id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
                             <v-btn small icon @click="deleteItem(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                         </template>
                     </v-data-table>
@@ -62,7 +62,7 @@ export default ({
             itemDelete: '',
             headers: [
                 { text: '#', value: 'row', sortable: false },
-                { text: 'Category Name', value: 'title', sortable: false },
+                { text: 'Category Name', value: 'categoryName', sortable: false },
                 { text: '', value: 'actions', sortable: false },
             ],
             breadcrumbs: [
@@ -79,7 +79,7 @@ export default ({
             this.isLoading = true
             const { page, itemsPerPage } = this.options
             
-            this.$axios.get(`/categories?page=${page}&limit=${itemsPerPage}&search=${this.search}`)
+            this.$axios.get(`/categories?page=${page}&limit=${itemsPerPage}`)
             .then((response) => {
                 let categories = response.data.categories
                 this.categories = categories.docs
@@ -99,7 +99,7 @@ export default ({
                 await this.getCategories();
                 this.alertType = 'success'
                 this.message = this.$t('DELETE_SUCCESS', {
-                    title: this.itemDelete.title
+                    categoryName: this.itemDelete.categoryName
                 })
             })
             .catch((error) => {})
@@ -134,7 +134,7 @@ export default ({
         if (this.$route.params.message) {
             this.alertType = this.$route.params.type
             this.message = this.$t(this.$route.params.message, {
-                title: this.$route.params.title
+                categoryName: this.$route.params.categoryName
             })
         }
     }

@@ -1,7 +1,7 @@
 export const state = () => ({
   categoryId: 0,
   categories: [
-    { _id: false, title: 'All' },
+    { id: false, category_name: 'All' },
   ],
   products: [],
 })
@@ -24,12 +24,12 @@ export const actions = {
   },
   getProducts({commit}) {
     return this.$axios.$get('/products').then(response => {
-      commit('updateProducts', response.products.docs);
+      commit('updateProducts', response.result);
     })
   },
   getCategories({commit}) {
     return this.$axios.$get('/categories').then(response => {
-      commit('updateCategories', response.categories.docs);
+      commit('updateCategories', response.result);
     })
   },
 }

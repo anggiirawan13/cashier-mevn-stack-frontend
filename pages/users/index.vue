@@ -27,13 +27,13 @@
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="primary" text @click="cancelDelete">Cancel</v-btn>
-                                        <v-btn color="error" text @click="confirmDelete(itemDelete._id)">Delete</v-btn>
+                                        <v-btn color="error" text @click="confirmDelete(itemDelete.id)">Delete</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
                         </template>
                         <template v-slot:item.actions="{ item }">
-                            <v-btn :to="`/users/edit/${item._id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
+                            <v-btn :to="`/users/edit/${item.id}`" icon><v-icon small>mdi-pencil</v-icon></v-btn>
                             <v-btn small icon @click="deleteItem(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                         </template>
                     </v-data-table>

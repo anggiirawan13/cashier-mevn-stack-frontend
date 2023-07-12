@@ -109,7 +109,7 @@ export default {
                 let categories = response.data.categories
                 categories.docs.forEach(cat => {
                     this.categories.push({
-                        value: cat._id,
+                        value: cat.id,
                         text: cat.title
                     })
                 })
