@@ -28,140 +28,131 @@
     <v-bottom-navigation horizontal height="10vh" fixed color="primary" app>
       <v-app-bar-nav-icon
         @click.stop="sideDrawer = !sideDrawer"
-        v-ripple="false"
-        plain
+        :ripple="false"
       />
-      <v-btn
-        v-for="(item, i) in bottomMenu"
-        :key="i"
-        :to="item.to"
-        v-ripple="false"
-        plain
-      >
-        <span>{{ item.title }}</span>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-btn>
       <v-spacer />
     </v-bottom-navigation>
   </v-app>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'DefaultLayout',
+  name: "DefaultLayout",
   data() {
     return {
       sideDrawer: false,
       sideMenu: [],
       originalSideMenu: [
         {
-          icon: 'mdi-view-dashboard-variant',
-          title: 'Dashboard',
-          to: '/dashboard',
-          middlewares: ['authenticated'],
+          icon: "mdi-view-dashboard-variant",
+          title: "Dashboard",
+          to: "/dashboard",
+          middlewares: ["admin", "authenticated"],
         },
         {
-          icon: 'mdi-application',
-          title: 'Cashier App',
-          to: '/',
-          middlewares: ['admin', 'cashier'],
+          icon: "mdi-application",
+          title: "Cashier App",
+          to: "/",
+          middlewares: ["admin", "cashier", "authenticated"],
         },
         {
-          icon: 'mdi-coffee',
-          title: 'Products Management',
-          to: '/products',
-          middlewares: ['admin'],
+          icon: "mdi-coffee",
+          title: "Products Management",
+          to: "/products",
+          middlewares: ["admin", "authenticated"],
         },
         {
-          icon: 'mdi-shape',
-          title: 'Categories Management',
-          to: '/categories',
-          middlewares: ['admin'],
+          icon: "mdi-shape",
+          title: "Categories Management",
+          to: "/categories",
+          middlewares: ["admin", "authenticated"],
         },
         {
-          icon: 'mdi-account',
-          title: 'Users Management',
-          to: '/users',
-          middlewares: ['admin'],
+          icon: "mdi-account",
+          title: "Users Management",
+          to: "/users",
+          middlewares: ["admin", "authenticated"],
         },
         {
-          icon: 'mdi-fingerprint',
-          title: 'Absence',
-          to: '/absence',
-          middlewares: ['authenticated'],
+          icon: "mdi-fingerprint",
+          title: "Absence",
+          to: "/absence",
+          middlewares: ["authenticated"],
         },
         {
-          icon: 'mdi-login',
-          title: 'Login',
-          to: '/login',
-          middlewares: ['unauthenticated'],
+          icon: "mdi-login",
+          title: "Login",
+          to: "/login",
+          middlewares: ["unauthenticated"],
         },
         {
-          icon: 'mdi-logout',
-          title: 'Logout',
-          to: '/logout',
-          middlewares: ['authenticated'],
+          icon: "mdi-logout",
+          title: "Logout",
+          to: "/logout",
+          middlewares: ["authenticated"],
         },
       ],
       bottomMenu: [],
       originalBottomMenu: [
         {
-          icon: 'mdi-application',
-          title: 'App',
-          to: '/',
-          middlewares: ['authenticated'],
+          icon: "mdi-credit-card-check-outline",
+          title: "Check Out",
+          middlewares: ["authenticated"],
         },
       ],
-    }
+    };
   },
   computed: {
-    ...mapGetters('auth', {
-      authenticated: ['authenticated'],
-      user: ['user'],
-    })
+    ...mapGetters("auth", {
+      authenticated: ["authenticated"],
+      user: ["user"],
+    }),
   },
   methods: {
     isWelcomeScreen() {
       if (
         !localStorage.welcomeScreen &&
-        this.$router.currentRoute.path !== '/register' &&
-        this.$router.currentRoute.path !== '/login'
+        this.$router.currentRoute.path !== "/register" &&
+        this.$router.currentRoute.path !== "/login"
       ) {
-        this.$router.push('/register')
+        this.$router.push("/register");
       }
     },
     filterMenu() {
-      this.sideMenu = this.originalSideMenu.filter(item => {
+      this.sideMenu = this.originalSideMenu.filter((item) => {
         if (this.authenticated) {
-          return item.middlewares.includes('authenticated') || item.middlewares.includes(this.user.role)
+          return (
+            item.middlewares.includes("authenticated") ||
+            item.middlewares.includes(this.user.role)
+          );
         } else {
-          return item.middlewares.includes('unauthenticated')
+          return item.middlewares.includes("unauthenticated");
         }
-      })
+      });
 
-      this.bottomMenu = this.originalBottomMenu.filter(item => {
-        if(this.authenticated) {
-          return item.middlewares.includes('authenticated')
+      this.bottomMenu = this.originalBottomMenu.filter((item) => {
+        if (this.authenticated) {
+          return item.middlewares.includes("authenticated");
         }
-      })
+      });
     },
   },
   watch: {
     $route() {
-      this.isWelcomeScreen()
+      this.isWelcomeScreen();
     },
     authenticated() {
-      this.filterMenu()
-    }
+      this.filterMenu();
+    },
   },
   mounted() {
-    if (this.$router.currentRoute.path === '/') {
-      this.isWelcomeScreen()
+    if (this.$router.currentRoute.path === "/") {
+      this.isWelcomeScreen();
     }
 
-    this.filterMenu()
+    this.filterMenu();
   },
-}
+};
 </script>

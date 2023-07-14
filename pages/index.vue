@@ -10,10 +10,10 @@
 </template>
 
 <script>
-export default ({
-  middlewares: ['authenticated'],
+export default {
+  middlewares: ["authenticated"],
   head: {
-    title: 'App'
-  }
-})
+    title: "App",
+  },
+};
 </script>
