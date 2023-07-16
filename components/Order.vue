@@ -36,10 +36,7 @@
             {{ currency(itemTotal(item.price, item.quantity)) }}
           </v-list-item-action>
         </v-list-item>
-        <v-list-item
-          v-if="cartItems.length"
-          class="text-h6 black--text grey lighten-2"
-        >
+        <v-list-item class="text-h6 black--text grey lighten-2">
           <v-list-item-content>
             <v-list-item-title>Sub Total</v-list-item-title>
           </v-list-item-content>
@@ -47,11 +44,7 @@
             {{ currency(subTotal) }}
           </v-list-item-action>
         </v-list-item>
-        <v-list-group
-          v-if="cartItems.length"
-          :value="false"
-          class="black--text grey lighten-3"
-        >
+        <v-list-group :value="false" class="black--text grey lighten-3">
           <template v-slot:activator>
             <v-list-item-content class="text-h6">
               <v-list-item-title>Additionals</v-list-item-title>
@@ -76,10 +69,7 @@
             </v-list-item>
           </template>
         </v-list-group>
-        <v-list-item
-          v-if="cartItems.length"
-          class="text-h6 black--text grey lighten-2"
-        >
+        <v-list-item class="text-h6 black--text grey lighten-2">
           <v-list-item-content>
             <v-list-item-title>Total</v-list-item-title>
           </v-list-item-content>
@@ -88,13 +78,13 @@
           </v-list-item-action>
         </v-list-item>
       </v-list>
-      <v-btn color="primary" block>Check Out</v-btn>
+      <v-btn color="primary" block @click="checkOut()">Check Out</v-btn>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   methods: {
@@ -105,6 +95,39 @@ export default {
     }),
     currency(value) {
       return Intl.NumberFormat("en-US").format(value);
+    },
+    checkOut() {
+      const username = this.getUserLogin.name;
+      const data = {
+        username,
+        sub_total: this.subTotal,
+        total_net: this.total,
+        tax: this.additionals[0].value,
+        service_charge: this.additionals[1].value,
+        details: [],
+      };
+
+      for (let i = 0; i < this.cartItems.length; i++) {
+        const temp = {
+          product_code: this.cartItems[i].product_code,
+          quantity: this.cartItems[i].quantity,
+          total_price: this.cartItems[i].price * this.cartItems[i].quantity,
+          price: this.cartItems[i].price,
+        };
+
+        data.details.push(temp);
+      }
+
+      console.log(data);
+
+      this.$axios
+        .$post("/orders", data)
+        .then((resp) => {
+          console.log(resp);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   computed: {
@@ -118,6 +141,9 @@ export default {
       subTotal: "subTotal",
       calculatePercentage: "calculatePercentage",
       total: "total",
+    }),
+    ...mapGetters("auth", {
+      getUserLogin: "user",
     }),
   },
 };
