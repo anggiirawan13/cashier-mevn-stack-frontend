@@ -17,7 +17,7 @@ export const state = () => ({
 export const getters = {
   cartItems: (state, getters, rootState) => {
     return state.items.map(({ id, quantity }) => {
-      let product = rootState.products.products.find(
+      let product = rootState.product.product.find(
         (product) => product.id === id
       );
 

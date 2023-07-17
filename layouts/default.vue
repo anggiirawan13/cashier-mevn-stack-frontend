@@ -59,20 +59,20 @@ export default {
         },
         {
           icon: "mdi-coffee",
-          title: "Products Management",
-          to: "/products",
+          title: "Product Management",
+          to: "/product",
           middlewares: ["admin", "authenticated"],
         },
         {
           icon: "mdi-shape",
-          title: "Categories Management",
-          to: "/categories",
+          title: "Category Management",
+          to: "/category",
           middlewares: ["admin", "authenticated"],
         },
         {
           icon: "mdi-account",
-          title: "Users Management",
-          to: "/users",
+          title: "User Management",
+          to: "/user",
           middlewares: ["admin", "authenticated"],
         },
         {

@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col cols="10">
         <v-autocomplete
-          label="Products"
+          label="Product"
           placeholder="Start typing to search"
           :search-input.sync="search"
           :loading="isLoading"
@@ -24,7 +24,7 @@
           <v-list>
             <v-list-item-group>
               <v-list-item
-                v-for="(category, index) in categories"
+                v-for="(category, index) in category"
                 :key="index"
                 :value="category.id"
                 :disabled="category.id === categoryId"
@@ -40,7 +40,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="(product, index) in filteredProducts" :key="index" cols="2">
+      <v-col v-for="(product, index) in filteredProduct" :key="index" cols="2">
         <v-card
           @click="addToCart(product.id)"
           :title="product.product_name"
@@ -48,7 +48,7 @@
         >
           <v-card-actions>
             <v-img
-              :src="require(`@/assets/images/products/${product.thumbnail}`)"
+              :src="require(`@/assets/images/product/${product.thumbnail}`)"
             ></v-img>
           </v-card-actions>
           <v-card-text align="center" class="product-name">
@@ -73,30 +73,30 @@ export default {
   },
   methods: {
     ...mapActions({
-      updateCategoryId: "products/updateCategoryId",
-      addToCart: "carts/addToCart",
-      getProducts: "products/getProducts",
-      getCategories: "products/getCategories",
-      searchProducts: "products/searchProducts",
-      resetProducts: "products/resetProducts",
+      updateCategoryId: "product/updateCategoryId",
+      addToCart: "cart/addToCart",
+      getProduct: "product/getProduct",
+      getCategory: "product/getCategory",
+      searchProduct: "product/searchProduct",
+      resetProduct: "product/resetProduct",
     }),
     resetSearchCategory() {
       this.updateCategoryId(0);
     },
   },
   computed: {
-    filteredProducts() {
+    filteredProduct() {
       if (this.categoryId) {
-        return this.products.filter(
+        return this.product.filter(
           (product) => product.category_id == this.categoryId
         );
       }
 
-      return this.products;
+      return this.product;
     },
-    ...mapState("products", {
-      products: "products",
-      categories: "categories",
+    ...mapState("product", {
+      product: "product",
+      category: "category",
       categoryId: "categoryId",
     }),
   },
@@ -106,14 +106,14 @@ export default {
 
       if (this.search) {
         setTimeout(() => {
-          this.itemSearch = this.products.filter((e) => {
+          this.itemSearch = this.product.filter((e) => {
             this.resetSearchCategory();
 
             return e.product_name;
           });
         }, 1000);
       } else {
-        this.resetProducts();
+        this.resetProduct();
         this.search = null;
         this.itemSearch = [];
       }
@@ -122,20 +122,20 @@ export default {
     },
     selectedSearch(product) {
       if (product) {
-        let result = this.products.filter(
+        let result = this.product.filter(
           (prod) => prod.product_name == product.product_name
         );
-        this.searchProducts(result);
+        this.searchProduct(result);
       }
     },
   },
   mounted() {
-    if (this.products.length <= 0) {
-      this.getProducts();
+    if (this.product.length <= 0) {
+      this.getProduct();
     }
 
-    if (this.categories.length === 1) {
-      this.getCategories();
+    if (this.category.length === 1) {
+      this.getCategory();
     }
   },
 };

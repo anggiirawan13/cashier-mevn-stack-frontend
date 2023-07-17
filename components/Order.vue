@@ -88,7 +88,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   methods: {
-    ...mapActions("carts", {
+    ...mapActions("cart", {
       increment: "increment",
       decrement: "decrement",
       remove: "remove",
@@ -104,7 +104,7 @@ export default {
         total_net: this.total,
         tax: this.additionals[0].value,
         service_charge: this.additionals[1].value,
-        details: [],
+        item: [],
       };
 
       for (let i = 0; i < this.cartItems.length; i++) {
@@ -115,13 +115,11 @@ export default {
           price: this.cartItems[i].price,
         };
 
-        data.details.push(temp);
+        data.item.push(temp);
       }
 
-      console.log(data);
-
       this.$axios
-        .$post("/orders", data)
+        .$post("/order", data)
         .then((resp) => {
           console.log(resp);
         })
@@ -131,11 +129,11 @@ export default {
     },
   },
   computed: {
-    ...mapState("carts", {
+    ...mapState("cart", {
       items: "items",
       additionals: "additionals",
     }),
-    ...mapGetters("carts", {
+    ...mapGetters("cart", {
       cartItems: "cartItems",
       itemTotal: "itemTotal",
       subTotal: "subTotal",
