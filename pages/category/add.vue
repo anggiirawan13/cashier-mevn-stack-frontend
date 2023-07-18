@@ -10,11 +10,18 @@
           <v-breadcrumbs :items="breadcrumbs" class="pa-0"></v-breadcrumbs>
           <v-form ref="form">
             <v-text-field
-              name="title"
-              label="Title"
+              name="categoryCode"
+              label="Category Code"
               type="text"
-              :rules="rules.title"
-              v-model="form.title"
+              :rules="rules.categoryCode"
+              v-model="form.category_code"
+            />
+            <v-text-field
+              name="categoryName"
+              label="Category Name"
+              type="text"
+              :rules="rules.categoryName"
+              v-model="form.category_name"
             />
             <v-select
               v-model="form.status"
@@ -25,7 +32,8 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn to="/category" color="secondary">Back</v-btn>
+          <v-spacer />
           <v-btn @click="doSave" color="primary" :loading="btnSaveDisable"
             >Save
           </v-btn>
@@ -51,11 +59,19 @@ export default {
       message: "",
       status: ["active", "inactive"],
       form: {
-        title: "",
+        category_code: "",
+        category_name: "",
         status: "",
       },
       rules: {
-        title: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Title" })],
+        categoryCode: [
+          (v) =>
+            !!v || this.$t("FIELD_IS_REQUIRED", { field: "Category Code" }),
+        ],
+        categoryName: [
+          (v) =>
+            !!v || this.$t("FIELD_IS_REQUIRED", { field: "Category Name" }),
+        ],
         status: [
           (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Status" }),
         ],
@@ -76,7 +92,7 @@ export default {
               params: {
                 type: "success",
                 message: "ADD_SUCCESS",
-                title: this.form.title,
+                title: this.form.category_code,
               },
             });
           })

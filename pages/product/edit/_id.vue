@@ -45,7 +45,8 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn to="/product" color="secondary">Back</v-btn>
+          <v-spacer />
           <v-btn @click="doSave" color="primary" :loading="btnSaveDisable"
             >Save
           </v-btn>

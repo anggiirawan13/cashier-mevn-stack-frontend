@@ -7,11 +7,18 @@
           <v-breadcrumbs :items="breadcrumbs" class="pa-0"></v-breadcrumbs>
           <v-form ref="form">
             <v-text-field
-              name="title"
-              label="Title"
+              name="productCode"
+              label="Product Code"
               type="text"
-              :rules="rules.title"
-              v-model="form.title"
+              :rules="rules.productCode"
+              v-model="form.product_code"
+            />
+            <v-text-field
+              name="productName"
+              label="Product Name"
+              type="text"
+              :rules="rules.productName"
+              v-model="form.product_name"
             />
             <v-text-field
               name="thumbnail"
@@ -27,8 +34,15 @@
               :rules="rules.price"
               v-model="form.price"
             />
+            <v-text-field
+              name="stock"
+              label="Stock"
+              type="number"
+              :rules="rules.stock"
+              v-model="form.stock"
+            />
             <v-select
-              v-model="form.categoryId"
+              v-model="form.category_id"
               :items="category"
               label="Category"
               :rules="rules.category"
@@ -42,7 +56,8 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn to="/product" color="secondary">Back</v-btn>
+          <v-spacer />
           <v-btn @click="doSave" color="primary" :loading="btnSaveDisable"
             >Save
           </v-btn>
@@ -68,23 +83,31 @@ export default {
       status: ["active", "inactive"],
       category: [],
       form: {
-        title: "",
+        product_code: "",
+        product_name: "",
         thumbnail: "",
-        categoryId: "",
+        stock: 0,
+        category_id: "",
         price: "",
         status: "",
       },
       rules: {
-        title: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Title" })],
+        productCode: [
+          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Product Code" }),
+        ],
+        productName: [
+          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Product Name" }),
+        ],
         status: [
           (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Status" }),
         ],
         thumbnail: [
-          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "thumbnail" }),
+          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Thumbnail" }),
         ],
-        price: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "price" })],
+        price: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Price" })],
+        stock: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Stock" })],
         category: [
-          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "category" }),
+          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Category" }),
         ],
       },
     };
@@ -102,32 +125,36 @@ export default {
               params: {
                 type: "success",
                 message: "ADD_SUCCESS",
-                title: this.form.title,
+                title: this.form.product_code,
               },
             });
           })
-          .catch((error) => {});
+          .catch((error) => {
+            console.log(error);
+          });
 
         this.btnSaveDisable = false;
       }
     },
     getCategory() {
       this.$axios
-        .get(`/category?page=1&limit=999999`)
+        .get(`/category`)
         .then((response) => {
-          let category = response.data.category;
-          category.docs.forEach((cat) => {
+          const { data } = response;
+          console.log(response);
+          data.result.forEach((cat) => {
             this.category.push({
               value: cat.id,
-              text: cat.title,
+              text: cat.category_name,
             });
           });
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   mounted() {
-    category;
     this.getCategory();
   },
 };

@@ -10,6 +10,13 @@
           <v-breadcrumbs :items="breadcrumbs" class="pa-0"></v-breadcrumbs>
           <v-form ref="form">
             <v-text-field
+              name="username"
+              label="Username"
+              type="text"
+              :rules="rules.username"
+              v-model="form.username"
+            />
+            <v-text-field
               name="fullname"
               label="Fullname"
               type="text"
@@ -30,13 +37,6 @@
               :rules="rules.password"
               v-model="form.password"
             />
-            <v-text-field
-              name="retype_password"
-              label="Re-Password"
-              type="password"
-              :rules="rules.retype_password"
-              v-model="form.retype_password"
-            />
             <v-select
               v-model="form.role"
               :items="roles"
@@ -52,7 +52,8 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn to="/user" color="secondary">Back</v-btn>
+          <v-spacer />
           <v-btn @click="doSave" color="primary" :loading="btnSaveDisable"
             >Save
           </v-btn>
@@ -84,10 +85,10 @@ export default {
       roles: ["admin", "cashier", "employee"],
       status: ["active", "inactive"],
       form: {
+        username: "",
         fullname: "",
         email: "",
         password: "",
-        retype_password: "",
         role: "",
         status: "",
       },
@@ -108,14 +109,6 @@ export default {
             v.length === 0 ||
             v.length >= 8 ||
             this.$t("FIELD_MIN", { field: "Password", min: 8 }),
-        ],
-        retype_password: [
-          (v) =>
-            v === this.form.password ||
-            this.$t("FIELD_CONFIRM", {
-              confirm: "Re-Password",
-              field: "Password",
-            }),
         ],
       },
     };
@@ -156,13 +149,17 @@ export default {
       this.$axios
         .get(`/user/${this.id}`, this.form)
         .then((response) => {
-          let user = response.data.user;
-          this.form.fullname = user.fullname;
-          this.form.email = user.email;
-          this.form.role = user.role;
-          this.form.status = user.status;
+          const { data } = response;
+          this.form.username = data.result.username;
+          this.form.fullname = data.result.fullname;
+          this.form.email = data.result.email;
+          this.form.password = data.result.password;
+          this.form.role = data.result.role;
+          this.form.status = data.result.status;
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   mounted() {

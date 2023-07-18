@@ -17,6 +17,13 @@
               v-model="form.fullname"
             />
             <v-text-field
+              name="username"
+              label="Username"
+              type="text"
+              :rules="rules.username"
+              v-model="form.username"
+            />
+            <v-text-field
               name="email"
               label="Email"
               type="email"
@@ -42,10 +49,16 @@
               :items="roles"
               label="Role"
             ></v-select>
+            <v-select
+              v-model="form.status"
+              :items="status"
+              label="Status"
+            ></v-select>
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn to="/user" color="secondary">Back</v-btn>
+          <v-spacer />
           <v-btn @click="doSave" color="primary" :loading="btnSaveDisable"
             >Save
           </v-btn>
@@ -69,19 +82,25 @@ export default {
       ],
       btnSaveDisable: false,
       message: "",
-      roles: ["admin", "cashier", "employee"],
+      roles: ["admin", "cashier"],
+      status: ["active", "inactive"],
       form: {
+        username: "",
         fullname: "",
         email: "",
         password: "",
         retype_password: "",
         role: "",
+        status: "",
       },
       rules: {
         fullname: [
           (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Fullname" }),
         ],
         role: [(v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Role" })],
+        status: [
+          (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Status" }),
+        ],
         email: [
           (v) => !!v || this.$t("FIELD_IS_REQUIRED", { field: "Email" }),
           (v) => /.+@.+/.test(v) || this.$t("EMAIL_INVALID"),
@@ -110,7 +129,7 @@ export default {
         this.btnSaveDisable = true;
 
         await this.$axios
-          .post("/user", this.form)
+          .post("/auth/register", this.form)
           .then(() => {
             this.$router.push({
               name: `user___${this.$i18n.locale}`,

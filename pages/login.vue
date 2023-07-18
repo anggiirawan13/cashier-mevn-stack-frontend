@@ -71,16 +71,15 @@ export default {
       this.btnLoginDisable = true;
 
       await this.$axios
-        .post("/auth/login", this.form)
+        .post("/user/login", this.form)
         .then((response) => {
           const { data } = response;
           if (data.success) {
             if (!localStorage.welcomeScreen) this.storeWelcomeScreen();
-
             this.login({
-              access_token: response.data.result.access_token,
-              refresh_token: response.data.result.refresh_token,
-              fullname: response.data.result.fullname,
+              access_token: data.result.access_token,
+              refresh_token: data.result.refresh_token,
+              fullname: data.result.fullname,
             });
 
             this.$router.push("/dashboard");

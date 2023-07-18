@@ -58,7 +58,7 @@
               </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-btn :to="`/user/edit/${item.id}`" icon
+              <v-btn :to="`/user/edit/${item.uuid}`" icon
                 ><v-icon small>mdi-pencil</v-icon></v-btn
               >
               <v-btn small icon @click="deleteItem(item)"
@@ -90,11 +90,12 @@ export default {
       dialogDelete: false,
       itemDelete: "",
       headers: [
-        { text: "#", value: "row", sortable: false },
+        { text: "#", value: "number", sortable: false },
         { text: "Fullname", value: "fullname", sortable: false },
         { text: "Email", value: "email", sortable: false },
         { text: "Role", value: "role", sortable: false },
-        { text: "", value: "actions", sortable: false },
+        { text: "Status", value: "status", sortable: false },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       breadcrumbs: [
         {
@@ -111,16 +112,20 @@ export default {
       const { page, itemsPerPage } = this.options;
 
       this.$axios
-        .get(`/user?page=${page}&limit=${itemsPerPage}&search=${this.search}`)
+        .get(
+          `/user?page=${page - 1}&limit=${itemsPerPage}&search=${this.search}`
+        )
         .then((response) => {
-          let user = response.data.user;
-          this.user = user.docs;
-          this.totalData = user.totalDocs;
+          const { data } = response;
+          this.user = data.result;
+          this.totalData = data.additionalEntity.totalData;
 
-          let i = user.pagingCounter;
-          this.user.map((user) => (user.row = i++));
+          let i = data.additionalEntity.number * itemsPerPage + 1;
+          this.user.map((user) => (user.number = i++));
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.log(error);
+        })
         .finally(() => {
           this.isLoading = false;
         });

@@ -58,7 +58,7 @@
               </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-btn :to="`/product/edit/${item.id}`" icon
+              <v-btn :to="`/product/edit/${item.uuid}`" icon
                 ><v-icon small>mdi-pencil</v-icon></v-btn
               >
               <v-btn small icon @click="deleteItem(item)"
@@ -90,15 +90,17 @@ export default {
       dialogDelete: false,
       itemDelete: "",
       headers: [
-        { text: "#", value: "row", sortable: false },
-        { text: "Title", value: "title", sortable: false },
+        { text: "#", value: "number", sortable: false },
+        { text: "Product Code", value: "product_code", sortable: false },
+        { text: "Product Name", value: "product_name", sortable: false },
         { text: "Price", value: "price", sortable: false },
+        { text: "Stock", value: "stock", sortable: false },
         {
           text: "Category",
-          value: "category_id.categoryName",
+          value: "category_id",
           sortable: false,
         },
-        { text: "", value: "actions", sortable: false },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       breadcrumbs: [
         {
@@ -116,15 +118,17 @@ export default {
 
       await this.$axios
         .get(
-          `/product?page=${page}&limit=${itemsPerPage}&search=${this.search}`
+          `/product?page=${page - 1}&limit=${itemsPerPage}&search=${
+            this.search
+          }`
         )
         .then((response) => {
-          let product = response.data.result.product;
-          this.product = product.docs;
-          this.totalData = product.totalDocs;
+          const { data } = response;
+          this.product = data.result;
+          this.totalData = data.additionalEntity.totalData;
 
-          let i = product.pagingCounter;
-          this.product.map((product) => (product.row = i++));
+          let i = data.additionalEntity.number * itemsPerPage + 1;
+          this.product.map((product) => (product.number = i++));
         })
         .catch((error) => {
           console.log(error);

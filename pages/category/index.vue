@@ -58,7 +58,7 @@
               </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-btn :to="`/category/edit/${item.id}`" icon
+              <v-btn :to="`/category/edit/${item.uuid}`" icon
                 ><v-icon small>mdi-pencil</v-icon></v-btn
               >
               <v-btn small icon @click="deleteItem(item)"
@@ -90,9 +90,10 @@ export default {
       dialogDelete: false,
       itemDelete: "",
       headers: [
-        { text: "#", value: "row", sortable: false },
-        { text: "Category Name", value: "categoryName", sortable: false },
-        { text: "", value: "actions", sortable: false },
+        { text: "#", value: "number", sortable: false },
+        { text: "Category Code", value: "category_code", sortable: false },
+        { text: "Category Name", value: "category_name", sortable: false },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       breadcrumbs: [
         {
@@ -108,16 +109,19 @@ export default {
       this.isLoading = true;
       const { page, itemsPerPage } = this.options;
 
-      this.$axios.get(`/category?page=${page}&limit=${itemsPerPage}`);
-      categoryn((response) => {
-        let category = response.data.category;
-        this.category = category.docs;
-        this.totalData = category.totalDocs;
+      this.$axios
+        .get(`/category?page=${page - 1}&limit=${itemsPerPage}`)
+        .then((response) => {
+          const { data } = response;
+          this.category = data.result;
+          this.totalData = data.additionalEntity.totalData;
 
-        let i = category.pagingCounter;
-        this.category.map((category) => (category.row = i++));
-      })
-        .catch((error) => {})
+          let i = data.additionalEntity.number * itemsPerPage + 1;
+          this.category.map((category) => (category.number = i++));
+        })
+        .catch((error) => {
+          console.log(error);
+        })
         .finally(() => {
           this.isLoading = false;
         });
@@ -132,7 +136,9 @@ export default {
             categoryName: this.itemDelete.categoryName,
           });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.log(error);
+        })
         .finally(() => {
           this.cancelDelete();
         });
